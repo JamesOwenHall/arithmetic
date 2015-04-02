@@ -13,9 +13,10 @@ var (
 type ErrUnknownOperator Node
 
 func (e ErrUnknownOperator) Error() string {
-	return "Unknown operator " + e.Text
+	return fmt.Sprintf("Unknown operator %s.", e.Text)
 }
 
+// Evaluate returns the result of the program.
 func Evaluate(r io.Reader) (float64, error) {
 	root, err := Parse(r)
 	if err != nil {

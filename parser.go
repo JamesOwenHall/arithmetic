@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 )
 
+// NodeType is the type associated to a node.
 type NodeType int8
 
 const (
@@ -13,7 +15,7 @@ const (
 )
 
 var (
-	ErrEndOfFile = fmt.Errorf("Unexpected end of file.")
+	ErrEndOfFile = errors.New("Unexpected end of file.")
 )
 
 type ErrUnexpectedToken Token
@@ -22,12 +24,14 @@ func (e ErrUnexpectedToken) Error() string {
 	return fmt.Sprintf("Unexpected token %s.", e.Val)
 }
 
+// Node is a single node within the abstract syntax tree.
 type Node struct {
 	Type     NodeType
 	Children []Node
 	Text     string
 }
 
+// Parse returns a root node representing the AST.
 func Parse(r io.Reader) (Node, error) {
 	c := Tokenize(r)
 	root := Node{
@@ -59,22 +63,22 @@ func parseNode(c <-chan Token) (*Node, error) {
 
 	switch t.Type {
 	case TokNumber:
-		return NumberNode(t), nil
+		return numberNode(t), nil
 	case TokOpenParen:
-		return OperationNode(c)
+		return operationNode(c)
 	default:
 		return nil, ErrUnexpectedToken(t)
 	}
 }
 
-func NumberNode(t Token) *Node {
+func numberNode(t Token) *Node {
 	return &Node{
 		Type: NodeNumber,
 		Text: t.Val,
 	}
 }
 
-func OperationNode(c <-chan Token) (*Node, error) {
+func operationNode(c <-chan Token) (*Node, error) {
 	n := new(Node)
 
 	next, ok := <-c
@@ -99,11 +103,11 @@ loop:
 		case TokOperator:
 			return nil, ErrUnexpectedToken(next)
 		case TokNumber:
-			n.Children = append(n.Children, *NumberNode(next))
+			n.Children = append(n.Children, *numberNode(next))
 		case TokCloseParen:
 			break loop
 		default:
-			child, err := OperationNode(c)
+			child, err := operationNode(c)
 			if err != nil {
 				return nil, err
 			}
