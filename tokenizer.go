@@ -10,11 +10,11 @@ import (
 type TokenType int8
 
 const (
-	ErrorToken TokenType = iota
-	OpenParen
-	CloseParen
-	Operator
-	Number
+	TokError TokenType = iota
+	TokOpenParen
+	TokCloseParen
+	TokOperator
+	TokNumber
 )
 
 // Token is a keyword, number or parenthesis.
@@ -49,13 +49,13 @@ func Tokenize(r io.Reader) <-chan Token {
 			case '(':
 				reader.ReadByte()
 				out <- Token{
-					Type: OpenParen,
+					Type: TokOpenParen,
 					Val:  "(",
 				}
 			case ')':
 				reader.ReadByte()
 				out <- Token{
-					Type: CloseParen,
+					Type: TokCloseParen,
 					Val:  ")",
 				}
 			default:
@@ -66,12 +66,12 @@ func Tokenize(r io.Reader) <-chan Token {
 
 				if word == "+" || word == "-" || word == "*" || word == "/" {
 					out <- Token{
-						Type: Operator,
+						Type: TokOperator,
 						Val:  word,
 					}
 				} else {
 					out <- Token{
-						Type: Number,
+						Type: TokNumber,
 						Val:  word,
 					}
 				}

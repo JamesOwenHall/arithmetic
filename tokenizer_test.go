@@ -18,8 +18,8 @@ func TestTokenize(t *testing.T) {
 	input = "()"
 	c = Tokenize(strings.NewReader(input))
 	expected = []Token{
-		{Type: OpenParen, Val: "("},
-		{Type: CloseParen, Val: ")"},
+		{Type: TokOpenParen, Val: "("},
+		{Type: TokCloseParen, Val: ")"},
 	}
 	if ok, want, got := ExpectTokens(expected, c); !ok {
 		t.Errorf("Expected token %v, got %v", want, got)
@@ -29,8 +29,8 @@ func TestTokenize(t *testing.T) {
 	input = " \t(\t \n \r )    "
 	c = Tokenize(strings.NewReader(input))
 	expected = []Token{
-		{Type: OpenParen, Val: "("},
-		{Type: CloseParen, Val: ")"},
+		{Type: TokOpenParen, Val: "("},
+		{Type: TokCloseParen, Val: ")"},
 	}
 	if ok, want, got := ExpectTokens(expected, c); !ok {
 		t.Errorf("Expected token %v, got %v", want, got)
@@ -40,12 +40,12 @@ func TestTokenize(t *testing.T) {
 	input = "(+ - / *)"
 	c = Tokenize(strings.NewReader(input))
 	expected = []Token{
-		{Type: OpenParen, Val: "("},
-		{Type: Operator, Val: "+"},
-		{Type: Operator, Val: "-"},
-		{Type: Operator, Val: "/"},
-		{Type: Operator, Val: "*"},
-		{Type: CloseParen, Val: ")"},
+		{Type: TokOpenParen, Val: "("},
+		{Type: TokOperator, Val: "+"},
+		{Type: TokOperator, Val: "-"},
+		{Type: TokOperator, Val: "/"},
+		{Type: TokOperator, Val: "*"},
+		{Type: TokCloseParen, Val: ")"},
 	}
 	if ok, want, got := ExpectTokens(expected, c); !ok {
 		t.Errorf("Expected token %v, got %v", want, got)
@@ -55,15 +55,15 @@ func TestTokenize(t *testing.T) {
 	input = "(+ 2.23 - -0.1 9 / *)"
 	c = Tokenize(strings.NewReader(input))
 	expected = []Token{
-		{Type: OpenParen, Val: "("},
-		{Type: Operator, Val: "+"},
-		{Type: Number, Val: "2.23"},
-		{Type: Operator, Val: "-"},
-		{Type: Number, Val: "-0.1"},
-		{Type: Number, Val: "9"},
-		{Type: Operator, Val: "/"},
-		{Type: Operator, Val: "*"},
-		{Type: CloseParen, Val: ")"},
+		{Type: TokOpenParen, Val: "("},
+		{Type: TokOperator, Val: "+"},
+		{Type: TokNumber, Val: "2.23"},
+		{Type: TokOperator, Val: "-"},
+		{Type: TokNumber, Val: "-0.1"},
+		{Type: TokNumber, Val: "9"},
+		{Type: TokOperator, Val: "/"},
+		{Type: TokOperator, Val: "*"},
+		{Type: TokCloseParen, Val: ")"},
 	}
 	if ok, want, got := ExpectTokens(expected, c); !ok {
 		t.Errorf("Expected token %v, got %v", want, got)
