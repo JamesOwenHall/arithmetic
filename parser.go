@@ -16,10 +16,10 @@ var (
 	ErrEndOfFile = fmt.Errorf("Unexpected end of file.")
 )
 
-type UnexpectedTokenError Token
+type ErrUnexpectedToken Token
 
-func (u UnexpectedTokenError) Error() string {
-	return fmt.Sprintf("Unexpected token %s.", u.Val)
+func (e ErrUnexpectedToken) Error() string {
+	return fmt.Sprintf("Unexpected token %s.", e.Val)
 }
 
 type Node struct {
@@ -63,7 +63,7 @@ func parseNode(c <-chan Token) (*Node, error) {
 	case TokOpenParen:
 		return OperationNode(c)
 	default:
-		return nil, UnexpectedTokenError(t)
+		return nil, ErrUnexpectedToken(t)
 	}
 }
 
@@ -83,7 +83,7 @@ func OperationNode(c <-chan Token) (*Node, error) {
 	}
 
 	if next.Type != TokOperator {
-		return nil, UnexpectedTokenError(next)
+		return nil, ErrUnexpectedToken(next)
 	}
 
 	n.Text = next.Val
@@ -97,7 +97,7 @@ loop:
 
 		switch next.Type {
 		case TokOperator:
-			return nil, UnexpectedTokenError(next)
+			return nil, ErrUnexpectedToken(next)
 		case TokNumber:
 			n.Children = append(n.Children, *NumberNode(next))
 		case TokCloseParen:
