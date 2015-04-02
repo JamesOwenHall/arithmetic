@@ -25,7 +25,7 @@ type Token struct {
 
 // Tokenize returns a read-only channel that produces tokens from r.
 func Tokenize(r io.Reader) <-chan Token {
-	result := make(chan Token)
+	result := make(chan Token, 32)
 
 	go func(r io.Reader, out chan Token) {
 		reader := bufio.NewReaderSize(r, 4)
