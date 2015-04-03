@@ -23,6 +23,13 @@ Operations are nestable, so you can have equations like this:
 
     ./arithmetic "(+ 1 (+ 2 -4 6))"
 
+Or you can use the "-i" flag to enter the REPL.
+
+    ./arithmetic -i
+    > (+ 99.332 -1)
+    98.332
+    > exit
+
 ## Examples
 
 ### Approximating e
