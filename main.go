@@ -12,6 +12,7 @@ import (
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	evalArg := flag.String("e", "", "evaluate argument")
 	interactive := flag.Bool("i", false, "interactive mode")
 	flag.Parse()
 
@@ -20,18 +21,21 @@ func main() {
 		return
 	}
 
+	if *evalArg != "" {
+		result, err := Evaluate(strings.NewReader(*evalArg))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		fmt.Println(result)
+		return
+	}
+
 	if flag.NArg() != 1 {
-		fmt.Fprintln(os.Stderr, "Usage: arithmetic <program>")
+		flag.Usage()
 		os.Exit(1)
 	}
-
-	result, err := Evaluate(strings.NewReader(flag.Arg(0)))
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
-
-	fmt.Println(result)
 }
 
 func repl() {
